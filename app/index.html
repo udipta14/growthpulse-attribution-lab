@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Growth analytics portfolio demo: attribution, cohorts, forecasting, and data quality using synthetic data.">
+  <title>GrowthPulse — Intelligence Studio</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="brand"><span class="brand-mark">G</span><span>growth<span class="brand-light">pulse</span></span></div>
+      <div class="workspace-label">WORKSPACE</div>
+      <div class="workspace"><span class="workspace-dot"></span> Consumer Growth <span class="chevron">⌄</span></div>
+      <nav aria-label="Main navigation">
+        <a class="nav-item active" href="#overview"><span>◫</span> Overview</a>
+        <a class="nav-item" href="#attribution"><span>⟲</span> Attribution lab</a>
+        <a class="nav-item" href="#cohorts"><span>▦</span> Cohorts</a>
+        <a class="nav-item" href="#forecast"><span>⌁</span> Forecast & alerts</a>
+        <a class="nav-item" href="#pipeline"><span>⛁</span> Pipeline health</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="data-mode"><span class="pulse"></span> Synthetic demo data</div>
+        <div class="profile"><div class="avatar">GP</div><div><strong>GrowthPulse</strong><small>Analytics workspace</small></div><span class="dots">•••</span></div>
+      </div>
+    </aside>
+
+    <main class="main" id="overview">
+      <header class="topbar">
+        <div><div class="eyebrow">GROWTH INTELLIGENCE / OVERVIEW</div><h1>Good morning, Growth team <span class="wave">✳</span></h1><p class="subhead">A clear read on acquisition, retention, and what to do next.</p></div>
+        <div class="top-actions"><span class="live-dot"></span><span class="live-label" id="refreshTime">Demo data</span><button class="icon-btn" aria-label="Notifications">♧</button><button class="export-btn" id="exportBtn">⇩ Export snapshot</button></div>
+      </header>
+
+      <section class="filter-row" aria-label="Dashboard filters">
+        <label>DATE RANGE<select id="rangeFilter"><option value="30">Last 30 days</option><option value="90" selected>Last 90 days</option><option value="ytd">Year to date</option></select></label>
+        <label>ATTRIBUTION MODEL<select id="modelFilter"><option value="last">Last touch</option><option value="first">First touch</option><option value="linear">Linear</option></select></label>
+        <label>CHANNEL<select id="channelFilter"><option value="all">All channels</option></select></label>
+        <div class="filter-note"><span class="info">i</span> Filters recalculate from the same event paths</div>
+      </section>
+
+      <section class="kpi-grid" aria-label="Key metrics">
+        <article class="kpi-card"><div class="kpi-label">ATTRIBUTED REVENUE <span class="info">i</span></div><div class="kpi-value" id="revenueValue">—</div><div class="kpi-foot"><span class="trend positive" id="revenueTrend">↗</span> vs prior period</div><div class="spark spark-teal" id="sparkRevenue"></div></article>
+        <article class="kpi-card"><div class="kpi-label">MEDIA SPEND <span class="info">i</span></div><div class="kpi-value" id="spendValue">—</div><div class="kpi-foot"><span class="trend neutral">●</span> paid channels only</div><div class="spark spark-blue" id="sparkSpend"></div></article>
+        <article class="kpi-card"><div class="kpi-label">BLENDED ROAS <span class="info">i</span></div><div class="kpi-value" id="roasValue">—</div><div class="kpi-foot"><span class="trend positive">↗</span> attributed revenue / spend</div><div class="spark spark-purple" id="sparkRoas"></div></article>
+        <article class="kpi-card"><div class="kpi-label">ATTRIBUTED ORDERS <span class="info">i</span></div><div class="kpi-value" id="ordersValue">—</div><div class="kpi-foot"><span class="trend positive">↗</span> <span id="conversionValue">—</span> conversion rate</div><div class="spark spark-orange" id="sparkOrders"></div></article>
+      </section>
+
+      <section class="grid-main">
+        <article class="panel chart-panel">
+          <div class="panel-head"><div><div class="eyebrow">PERFORMANCE</div><h2>Revenue & spend trend</h2><p>Daily movement for the selected window</p></div><div class="legend"><span><i class="legend-dot teal"></i>Revenue</span><span><i class="legend-dot blue"></i>Spend</span></div></div>
+          <div class="chart-wrap"><canvas id="trendChart" aria-label="Revenue and spend trend chart"></canvas></div>
+          <div class="chart-axis" id="trendAxis"></div>
+        </article>
+        <article class="panel insight-panel">
+          <div class="panel-head"><div><div class="eyebrow">INSIGHT ENGINE <span class="beta">RULES-BASED DEMO</span></div><h2>What changed?</h2></div><span class="sparkle">✧</span></div>
+          <div class="insight-card primary-insight"><span class="insight-icon">↗</span><div><strong id="insightHeadline">Loading insight</strong><p id="insightBody">The demo pipeline is preparing a concise, evidence-based summary.</p></div></div>
+          <div class="insight-card"><span class="small-icon amber">!</span><div><strong id="riskHeadline">Watchlist</strong><p id="riskBody">No high-severity data issues detected.</p></div></div>
+          <div class="copilot-foot"><span class="checkmark">✓</span> Every insight links back to a metric or quality check</div>
+        </article>
+      </section>
+
+      <section class="grid-lower" id="attribution">
+        <article class="panel attribution-panel">
+          <div class="panel-head"><div><div class="eyebrow">CHANNEL CREDIT</div><h2>Attribution breakdown</h2><p>Credit moves when the model changes</p></div><a class="text-link" href="#journeys">View journeys <span>↗</span></a></div>
+          <div class="table-wrap"><table><thead><tr><th>CHANNEL</th><th>SPEND</th><th>ORDERS</th><th>REVENUE</th><th>ROAS</th><th>SPEND SHARE</th></tr></thead><tbody id="channelRows"></tbody></table></div>
+          <div class="table-foot"><span class="legend-dot purple"></span><span>Attributed values use <strong id="modelName">Last touch</strong></span><span class="info">i</span></div>
+        </article>
+        <article class="panel cohort-panel" id="cohorts">
+          <div class="panel-head"><div><div class="eyebrow">RETENTION</div><h2>Cohort health</h2><p>Repeat order rate by first-order month</p></div><button class="subtle-btn">By month⌄</button></div>
+          <div class="cohort-wrap" id="cohortGrid"></div>
+          <div class="cohort-legend"><span>Lower retention</span><div class="gradient"></div><span>Higher</span></div>
+        </article>
+      </section>
+
+      <section class="grid-bottom" id="forecast">
+        <article class="panel forecast-panel">
+          <div class="panel-head"><div><div class="eyebrow">FORECAST</div><h2>Next 14 days</h2><p>Trend + weekday baseline; synthetic planning view</p></div><span class="forecast-tag">BASELINE MODEL</span></div>
+          <div class="forecast-chart-wrap"><canvas id="forecastChart" aria-label="14 day forecast chart"></canvas></div>
+          <div class="forecast-stat-row"><div><span>Expected orders</span><strong id="forecastOrders">—</strong></div><div><span>Expected revenue</span><strong id="forecastRevenue">—</strong></div><div><span>Model note</span><strong class="muted-strong">Planning baseline</strong></div></div>
+        </article>
+        <article class="panel alert-panel" id="pipeline">
+          <div class="panel-head"><div><div class="eyebrow">DATA QUALITY</div><h2>Pipeline health</h2><p>Latest synthetic run</p></div><span class="health-pill" id="healthPill">Healthy</span></div>
+          <div class="quality-score"><div class="score-ring"><span id="qualityScore">—</span></div><div><strong>Trust score</strong><small>Rule-based checks passed</small></div></div>
+          <div class="quality-list" id="qualityChecks"></div>
+          <div class="alert-footer"><span class="pulse"></span><span id="lastRun">Last run —</span><a class="text-link" href="#">Runbook ↗</a></div>
+        </article>
+      </section>
+
+      <section class="panel journey-panel" id="journeys">
+        <div class="panel-head"><div><div class="eyebrow">PATH ANALYSIS</div><h2>Customer journeys</h2><p>Sample paths show why first, last, and linear attribution disagree</p></div><div class="journey-summary"><span class="journey-dot"></span> <span id="journeyCount">—</span> synthetic paths</div></div>
+        <div class="journey-list" id="journeyList"></div>
+      </section>
+
+      <footer class="footer"><span>GROWTHPULSE / PORTFOLIO DEMO</span><span>All records are synthetic • Metrics are illustrative</span><span>Built for transparent growth decisions</span></footer>
+    </main>
+  </div>
+  <script src="./app.js"></script>
+</body>
+</html>
